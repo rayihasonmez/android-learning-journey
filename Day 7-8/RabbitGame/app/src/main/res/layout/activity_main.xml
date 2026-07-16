@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/timeView"
+        android:layout_width="194dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="50dp"
+        android:gravity="start|center_vertical"
+        android:text="Time: 15"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/scoreView"
+        android:layout_width="194dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="24dp"
+        android:gravity="start|center_vertical"
+        android:text="Score:"
+        android:textColor="#686868"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/timeView"
+        app:layout_constraintTop_toBottomOf="@+id/timeView" />
+
+    <FrameLayout
+        android:id="@+id/parent"
+        android:layout_width="411dp"
+        android:layout_height="539dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreView">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="155dp"
+            android:layout_height="153dp"
+            app:srcCompat="@drawable/rabbit" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
