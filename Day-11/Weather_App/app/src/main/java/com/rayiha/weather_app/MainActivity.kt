@@ -21,6 +21,8 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import com.rayiha.weather_app.model.WeatherResponse
+
 class MainActivity : AppCompatActivity() {
 
 
@@ -96,19 +98,20 @@ class MainActivity : AppCompatActivity() {
                             city = city,
                             apiKey = Constants.API_KEY
                         )
+                        updateWeatherUI(response)
 
-                        val iconCode = response.weather[0].icon
-                        val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
-
-                        binding.tvTemperature.text = "${response.main.temp}°C"
-                        binding.tvHumidity.text = "Humidity: ${response.main.humidity}%"
-                        binding.tvWindSpeed.text = "Wind: ${response.wind.speed} m/s"
-                        binding.tvDescription.text =
-                            "${response.weather[0].description.ilkHarfiBuyukYap()}"
-                        binding.tvName.text = "${response.name}"
-                        binding.tvFeelsLike.text = "Feels Like: ${response.main.feels_like}°C"
-                        binding.tvPressure.text = "Pressure: ${response.main.pressure}hPa"
-                        binding.ivWeatherIcon.load(iconUrl)
+//                        val iconCode = response.weather[0].icon
+//                        val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+//
+//                        binding.tvTemperature.text = "${response.main.temp}°C"
+//                        binding.tvHumidity.text = "Humidity: ${response.main.humidity}%"
+//                        binding.tvWindSpeed.text = "Wind: ${response.wind.speed} m/s"
+//                        binding.tvDescription.text =
+//                            "${response.weather[0].description.ilkHarfiBuyukYap()}"
+//                        binding.tvName.text = "${response.name}"
+//                        binding.tvFeelsLike.text = "Feels Like: ${response.main.feels_like}°C"
+//                        binding.tvPressure.text = "Pressure: ${response.main.pressure}hPa"
+//                        binding.ivWeatherIcon.load(iconUrl)
 
 
                     }
@@ -147,6 +150,7 @@ class MainActivity : AppCompatActivity() {
                                 lon = longitude,
                                 apiKey = Constants.API_KEY
                             )
+                            updateWeatherUI(response)
 
                         } catch (e: Exception) {
 
@@ -168,5 +172,23 @@ class MainActivity : AppCompatActivity() {
                 Log.e("LOCATION", "Hata: ${e.message}")
 
             }
+    }
+    private fun updateWeatherUI(response: WeatherResponse) {
+
+        val iconCode = response.weather[0].icon
+        val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+
+        binding.tvTemperature.text = "${response.main.temp}°C"
+        binding.tvHumidity.text = "Humidity: ${response.main.humidity}%"
+        binding.tvWindSpeed.text = "Wind: ${response.wind.speed} m/s"
+        binding.tvDescription.text =
+            response.weather[0].description.ilkHarfiBuyukYap()
+        binding.tvName.text = response.name
+        binding.tvFeelsLike.text =
+            "Feels Like: ${response.main.feels_like}°C"
+        binding.tvPressure.text =
+            "Pressure: ${response.main.pressure} hPa"
+
+        binding.ivWeatherIcon.load(iconUrl)
     }
 }
