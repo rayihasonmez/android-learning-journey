@@ -138,6 +138,23 @@ class MainActivity : AppCompatActivity() {
 
                     Log.d("LOCATION", "Lat: $latitude")
                     Log.d("LOCATION", "Lon: $longitude")
+                    lifecycleScope.launch {
+
+                        try {
+
+                            val response = RetrofitClient.api.getWeatherByLocation(
+                                lat = latitude,
+                                lon = longitude,
+                                apiKey = Constants.API_KEY
+                            )
+
+                        } catch (e: Exception) {
+
+                            Log.e("WEATHER", "Hata: ${e.message}")
+
+                        }
+
+                    }
 
                 } else {
 
