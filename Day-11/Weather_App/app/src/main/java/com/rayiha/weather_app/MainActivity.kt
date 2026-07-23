@@ -22,6 +22,8 @@ import androidx.core.app.ActivityCompat
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import com.rayiha.weather_app.model.WeatherResponse
+import android.view.View
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -67,13 +69,15 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
         if (
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-
+            binding.weatherUI.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
             getCurrentLocation()
 
         } else {
@@ -190,5 +194,8 @@ class MainActivity : AppCompatActivity() {
             "Pressure: ${response.main.pressure} hPa"
 
         binding.ivWeatherIcon.load(iconUrl)
+
+        binding.progressBar.visibility = View.GONE
+        binding.weatherUI.visibility = View.VISIBLE
     }
 }
