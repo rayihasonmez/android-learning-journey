@@ -23,6 +23,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import com.rayiha.weather_app.model.WeatherResponse
 import android.view.View
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class MainActivity : AppCompatActivity() {
@@ -76,8 +77,8 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            binding.weatherUI.visibility = View.GONE
-            binding.progressBar.visibility = View.VISIBLE
+//            binding.weatherUI.visibility = View.GONE
+//            binding.progressBar.visibility = View.VISIBLE
             getCurrentLocation()
 
         } else {
@@ -91,42 +92,48 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
 
-
-        binding.btnSearch.setOnClickListener {
-            val city = binding.editTextText.text.toString()
-
-
-                lifecycleScope.launch {
-                    try {
-                        val response = RetrofitClient.api.getWeather(
-                            city = city,
-                            apiKey = Constants.API_KEY
-                        )
-                        updateWeatherUI(response)
-
-//                        val iconCode = response.weather[0].icon
-//                        val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+        binding.tvCity.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Search City")
+                .setMessage("Dialog başarıyla açıldı!")
+                .setPositiveButton("OK", null)
+                .show()
+        }
+//        binding.btnSearch.setOnClickListener {
+//            val city = binding.editTextText.text.toString()
 //
-//                        binding.tvTemperature.text = "${response.main.temp}°C"
-//                        binding.tvHumidity.text = "Humidity: ${response.main.humidity}%"
-//                        binding.tvWindSpeed.text = "Wind: ${response.wind.speed} m/s"
-//                        binding.tvDescription.text =
-//                            "${response.weather[0].description.ilkHarfiBuyukYap()}"
-//                        binding.tvName.text = "${response.name}"
-//                        binding.tvFeelsLike.text = "Feels Like: ${response.main.feels_like}°C"
-//                        binding.tvPressure.text = "Pressure: ${response.main.pressure}hPa"
-//                        binding.ivWeatherIcon.load(iconUrl)
-
-
-                    }
-                    catch (e: Exception) {
-                        Toast.makeText(
-                            this@MainActivity,                   // Context (burada MainActivity)
-                            "Şehir bulunamadı",     // Gösterilecek mesaj
-                            Toast.LENGTH_SHORT      // Süre
-                        ).show()
-                    }
-            }}
+//
+//                lifecycleScope.launch {
+//                    try {
+//                        val response = RetrofitClient.api.getWeather(
+//                            city = city,
+//                            apiKey = Constants.API_KEY
+//                        )
+//                        updateWeatherUI(response)
+//
+////                        val iconCode = response.weather[0].icon
+////                        val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+////
+////                        binding.tvTemperature.text = "${response.main.temp}°C"
+////                        binding.tvHumidity.text = "Humidity: ${response.main.humidity}%"
+////                        binding.tvWindSpeed.text = "Wind: ${response.wind.speed} m/s"
+////                        binding.tvDescription.text =
+////                            "${response.weather[0].description.ilkHarfiBuyukYap()}"
+////                        binding.tvName.text = "${response.name}"
+////                        binding.tvFeelsLike.text = "Feels Like: ${response.main.feels_like}°C"
+////                        binding.tvPressure.text = "Pressure: ${response.main.pressure}hPa"
+////                        binding.ivWeatherIcon.load(iconUrl)
+//
+//
+//                    }
+//                    catch (e: Exception) {
+//                        Toast.makeText(
+//                            this@MainActivity,                   // Context (burada MainActivity)
+//                            "Şehir bulunamadı",     // Gösterilecek mesaj
+//                            Toast.LENGTH_SHORT      // Süre
+//                        ).show()
+//                    }
+//            }}
 
         }
 
@@ -134,6 +141,8 @@ class MainActivity : AppCompatActivity() {
     private fun getCurrentLocation() {
 
         Log.d("LOCATION", "Fonksiyon çalıştı")
+
+
 
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
@@ -178,24 +187,41 @@ class MainActivity : AppCompatActivity() {
             }
     }
     private fun updateWeatherUI(response: WeatherResponse) {
-
-        val iconCode = response.weather[0].icon
-        val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
-
+        val weatherMain = response.weather.first().main
+        val animationRes = when (weatherMain) {
+            "Clear" -> R.raw.sunny
+            "Clouds" -> R.raw.cloudy
+            "Rain" -> R.raw.rain
+            "Drizzle" -> R.raw.rain
+            "Thunderstorm" -> R.raw.thunderstorm
+            "Snow" -> R.raw.snow
+            else -> R.raw.cloudy
+        }
+        val backgroundRes = when (weatherMain) {
+            "Clear" -> R.drawable.bg_sunny
+            "Clouds" -> R.drawable.bg_cloudy
+            "Rain" -> R.drawable.bg_rain
+            "Drizzle" -> R.drawable.bg_rain
+            "Thunderstorm" -> R.drawable.bg_storm
+            "Snow" -> R.drawable.bg_snow
+            else -> R.drawable.bg_cloudy
+        }
+        binding.rootLayout.setBackgroundResource(backgroundRes)
         binding.tvTemperature.text = "${response.main.temp}°C"
         binding.tvHumidity.text = "Humidity: ${response.main.humidity}%"
         binding.tvWindSpeed.text = "Wind: ${response.wind.speed} m/s"
         binding.tvDescription.text =
             response.weather[0].description.ilkHarfiBuyukYap()
-        binding.tvName.text = response.name
-        binding.tvFeelsLike.text =
+        binding.tvCity.text = response.name
+        //binding.tvFeelsLike.text =
             "Feels Like: ${response.main.feels_like}°C"
         binding.tvPressure.text =
             "Pressure: ${response.main.pressure} hPa"
 
-        binding.ivWeatherIcon.load(iconUrl)
+        binding.weatherAnimation.setAnimation(animationRes)
+        binding.weatherAnimation.playAnimation()
 
-        binding.progressBar.visibility = View.GONE
-        binding.weatherUI.visibility = View.VISIBLE
+       // binding.progressBar.visibility = View.GONE
+       // binding.weatherUI.visibility = View.VISIBLE
     }
 }
